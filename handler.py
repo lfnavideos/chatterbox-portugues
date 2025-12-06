@@ -26,14 +26,47 @@ MODEL = None
 PORTUGUESE_MODEL = "FearL0rd/Chatterbox-TTS-Portuguese"
 
 def get_model():
-    """Carrega o modelo Chatterbox PORTUGUÊS (singleton pattern)"""
+    """
+    Carrega o modelo Chatterbox PORTUGUÊS (singleton pattern)
+
+    O modelo fine-tuned requer:
+    1. Carregar o modelo base
+    2. Baixar e aplicar os checkpoints do modelo português
+    """
     global MODEL
     if MODEL is None:
         print(f"Carregando modelo Chatterbox PORTUGUES: {PORTUGUESE_MODEL}")
         from chatterbox.tts import ChatterboxTTS
+        from huggingface_hub import hf_hub_download
+        from safetensors.torch import load_file
+
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        # Carregar modelo do HuggingFace - sintaxe correta
-        MODEL = ChatterboxTTS.from_pretrained(device=device, model_id=PORTUGUESE_MODEL)
+
+        # 1. Carregar modelo base
+        print("Carregando modelo base...")
+        MODEL = ChatterboxTTS.from_pretrained(device=device)
+
+        # 2. Baixar e aplicar checkpoints do modelo português
+        print(f"Aplicando checkpoints do modelo português: {PORTUGUESE_MODEL}")
+
+        # t3_cfg.safetensors - checkpoint principal
+        t3_path = hf_hub_download(repo_id=PORTUGUESE_MODEL, filename="t3_cfg.safetensors")
+        t3_state = load_file(t3_path, device="cpu")
+        MODEL.t3.load_state_dict(t3_state)
+        print("   t3_cfg.safetensors carregado")
+
+        # s3gen.safetensors
+        s3_path = hf_hub_download(repo_id=PORTUGUESE_MODEL, filename="s3gen.safetensors")
+        s3_state = load_file(s3_path, device="cpu")
+        MODEL.s3gen.load_state_dict(s3_state)
+        print("   s3gen.safetensors carregado")
+
+        # ve.safetensors (voice encoder)
+        ve_path = hf_hub_download(repo_id=PORTUGUESE_MODEL, filename="ve.safetensors")
+        ve_state = load_file(ve_path, device="cpu")
+        MODEL.ve.load_state_dict(ve_state)
+        print("   ve.safetensors carregado")
+
         print(f"Modelo PORTUGUES carregado no dispositivo: {device}")
     return MODEL
 

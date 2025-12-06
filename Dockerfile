@@ -23,7 +23,8 @@ RUN pip install --no-cache-dir \
     runpod \
     requests \
     soundfile \
-    huggingface_hub
+    huggingface_hub \
+    safetensors
 
 COPY handler.py /app/handler.py
 
