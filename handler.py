@@ -12,8 +12,14 @@ Data: 2025-12-06
 
 # Fix numba/librosa caching issue - MUST be before any imports
 import os
+
+# Use Network Volume for HuggingFace cache if available
+if os.path.exists('/runpod-volume'):
+    os.environ['HF_HOME'] = '/runpod-volume/huggingface'
+    os.environ['TRANSFORMERS_CACHE'] = '/runpod-volume/huggingface'
+    os.makedirs('/runpod-volume/huggingface', exist_ok=True)
+
 os.environ['NUMBA_CACHE_DIR'] = '/tmp/numba_cache'
-os.environ['NUMBA_DISABLE_CACHING'] = '1'
 os.environ['MPLCONFIGDIR'] = '/tmp/mpl'
 
 import runpod
