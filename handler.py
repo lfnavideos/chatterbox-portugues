@@ -32,7 +32,8 @@ def get_model():
         print(f"Carregando modelo Chatterbox PORTUGUES: {PORTUGUESE_MODEL}")
         from chatterbox.tts import ChatterboxTTS
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        MODEL = ChatterboxTTS.from_pretrained(PORTUGUESE_MODEL, device=device)
+        # Carregar modelo do HuggingFace - sintaxe correta
+        MODEL = ChatterboxTTS.from_pretrained(device=device, model_id=PORTUGUESE_MODEL)
         print(f"Modelo PORTUGUES carregado no dispositivo: {device}")
     return MODEL
 
