@@ -30,5 +30,7 @@ COPY handler.py /app/handler.py
 
 ENV PYTHONUNBUFFERED=1
 ENV HF_HOME=/app/cache
+ENV NUMBA_CACHE_DIR=/tmp/numba_cache
+ENV NUMBA_DISABLE_JIT=0
 
 CMD ["python", "-u", "/app/handler.py"]
