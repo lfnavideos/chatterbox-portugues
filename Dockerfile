@@ -28,9 +28,12 @@ RUN pip install --no-cache-dir \
 
 COPY handler.py /app/handler.py
 
+# Create cache directories with proper permissions
+RUN mkdir -p /tmp/numba_cache /tmp/librosa_cache && chmod -R 777 /tmp/numba_cache /tmp/librosa_cache
+
 ENV PYTHONUNBUFFERED=1
 ENV HF_HOME=/app/cache
 ENV NUMBA_CACHE_DIR=/tmp/numba_cache
-ENV NUMBA_DISABLE_JIT=0
+ENV MPLCONFIGDIR=/tmp/mpl
 
 CMD ["python", "-u", "/app/handler.py"]

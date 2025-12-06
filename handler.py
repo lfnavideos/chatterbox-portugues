@@ -10,6 +10,11 @@ Autor: Projeto Bíblia em Vídeos
 Data: 2025-12-06
 """
 
+# Fix numba/librosa caching issue - MUST be before any imports
+import os
+os.environ['NUMBA_CACHE_DIR'] = '/tmp/numba_cache'
+os.environ['MPLCONFIGDIR'] = '/tmp/mpl'
+
 import runpod
 import torch
 import torchaudio
